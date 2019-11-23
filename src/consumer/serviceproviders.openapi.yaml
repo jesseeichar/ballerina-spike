@@ -1,0 +1,9 @@
+openapi: 3.0.1
+info:
+  title: serviceproviders
+  version: 1.0.0
+servers:
+- url: //localhost:9090/api/v1/service-providers
+paths:
+  /get: {}
+components: {}
