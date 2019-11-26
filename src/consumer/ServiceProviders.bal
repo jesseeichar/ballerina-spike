@@ -1,5 +1,4 @@
 import ballerina/http;
-import ballerina/log;
 
 final string serviceProvidersPath = v1BasePath + "/service-providers";
 final string serviceProvidersPathWithVar = serviceProvidersPath + "/{service-provider-id}";
@@ -10,24 +9,20 @@ final string serviceProvidersPathWithVar = serviceProvidersPath + "/{service-pro
 service serviceproviders on mainListener {
 
     @http:ResourceConfig {
-                path: "/"
-	}
+        path: "/"
+    }
     resource function list(http:Caller caller, http:Request req) {
-        // Send a response back to the caller.
-        var result = caller->respond("serviceproviders!");
-        if (result is error) {
-            log:printError("Error sending response", result);
-        }
+        var forwardReq = requestWithAuthHeader(req);
+        var listOfServiceProviders = tpmsCore->get("/service-providers/with-orgunits", forwardReq);
+        handleResponse(caller, listOfServiceProviders);
     }
 
     @http:ResourceConfig {
-                path: "/{serviceprovider}"
-	}
+        path: "/{serviceprovider}"
+    }
     resource function get(http:Caller caller, http:Request req, string serviceprovider) {
-        // Send a response back to the caller.
-        var result = caller->respond("serviceproviders!" + (<@untainted>serviceprovider));
-        if (result is error) {
-            log:printError("Error sending response", result);
-        }
+        var forwardReq = requestWithAuthHeader(req);
+        var listOfServiceProviders = tpmsCore->get("/service-providers/with-orgunits/" + (<@untainted> serviceprovider), forwardReq);
+        handleResponse(caller, listOfServiceProviders);
     }
 }
